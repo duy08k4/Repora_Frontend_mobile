@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Repora</string>
+    <string name="title_activity_main">Repora</string>
+    <string name="package_name">ionic.reporafrontendmobile</string>
+    <string name="custom_url_scheme">ionic.reporafrontendmobile</string>
+</resources>

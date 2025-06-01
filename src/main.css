@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+:root {
+    --boxShadow: 0 0 5px rgba(0, 0, 0, 0.25);
+    --mainColor-dark: #3e3f46; 
+    --mainColor-light: #ffffff; 
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
+
+p, i, h1, h2, h3, h4, h5, h6 {
+    color: black;
+}
+
+#root {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+}
+
+.pagePadding {
+    padding: 60px 30px;
+}

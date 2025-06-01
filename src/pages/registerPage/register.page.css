@@ -1,0 +1,127 @@
+.registerPage {
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .registerForm {
+        height: fit-content;
+        width: 100%;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+
+        .registerForm__backbtnBox {
+            height: fit-content;
+            width: 100%;
+            background-color: transparent;
+
+            .registerForm__backbtnBox--btn {
+                background-color: transparent;
+
+                i {
+                    font-size: 24px;
+                }
+            }
+        }
+
+        .registerForm__titleContainer {
+            height: fit-content;
+            width: 100%;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+
+            .registerForm__titleContainer--subTitle {
+                font-size: 12px;
+                color: #808080;
+                font-weight: light;
+            }
+        }
+
+        .registerForm__inputContainer {
+            height: fit-content;
+            width: 100%;
+            background-color: transparent;
+            display: flex;
+            gap: 20px;
+            flex-direction: column;
+
+            .registerForm__inputContainer--input {
+                height: fit-content;
+                width: 100%;
+                background-color: transparent;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                box-shadow: var(--boxShadow);
+                border-radius: 10px;
+                padding: 5px 20px;
+
+                i {
+                    font-size: 20px;
+                    color: var(--mainColor-dark);
+                }
+
+                input {
+                    outline: none;
+                    height: 40px;
+                    flex: 1;
+                    font-size: 14px;
+                    color: var(--mainColor-dark);
+                    background-color: transparent;
+                    border: none;
+                }
+            }
+        }
+
+        .registerForm__buttonContainer {
+            height: fit-content;
+            width: 100%;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .registerForm__buttonContainer--registerBtn {
+                text-transform: uppercase;
+                height: fit-content;
+                width: 100%;
+                font-size: 14px;
+                color: white;
+                background-color: var(--mainColor-dark);
+                padding: 18px 0;
+                border-radius: 10px;
+            }
+        }
+
+    }
+
+    .registerForm__direction {
+        width: 100%;
+        flex: 1;
+        background-color: transparent;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+
+        p {
+            font-size: 14px;
+            color: #808080;
+            display: flex;
+            gap: 5px;
+
+            .redirect {
+                color: var(--mainColor-dark);
+                font-weight: 600;
+                font-style: italic;
+                text-decoration: underline;
+            }
+        }
+    }
+
+}
