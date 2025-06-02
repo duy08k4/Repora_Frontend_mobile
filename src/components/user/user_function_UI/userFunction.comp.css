@@ -1,0 +1,73 @@
+.userFunctionUI {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
+
+.userFunctionUI__allFunction {
+    position: absolute;
+    z-index: 500;
+    bottom: 120px;
+    right: 30px;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .userFunctionUI__allFunction__btn {
+        height: 50px;
+        width: 50px;
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
+
+        i {
+            font-size: 18px;
+        }
+    }
+
+    .userFunctionUI__allFunction__btn--logout {
+        background-color: darkred;
+        
+        i {
+            color: white;
+        }
+    }
+
+    .userFunctionUI__allFunction__btn--createReport {
+        i {
+            color: red;
+        }
+    }
+}
+
+.userFunctionUI__emergencyContainer {
+    position: absolute;
+    z-index: 600;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: fit-content;
+    width: calc(100% - 60px);
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .userFunctionUI__emergencyContainer--btn {
+        height: fit-content;
+        width: 80%;
+        text-transform: uppercase;
+        color: #ffffff;
+        font-size: 16px;
+        background-color: red;
+        padding: 20px 0;
+        border-radius: 20px;
+        box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
+    }
+}

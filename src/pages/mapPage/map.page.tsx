@@ -5,6 +5,8 @@ import { IonPage } from "@ionic/react"
 
 // Import component
 import StaffFunctionUI from "../../components/staff/staff_function_UI/staffFunction.comp"
+import UserFunctionUI from "../../components/user/user_function_UI/userFunction.comp"
+
 // Import css
 import "./map.page.css"
 
@@ -19,8 +21,8 @@ const MapPage: React.FC = () => {
     return (
         <IonPage>
             <div className="mapPage">
-                <StaffFunctionUI />
-
+                {/* <StaffFunctionUI /> */}
+                <UserFunctionUI />
             </div>
         </IonPage>
     )
