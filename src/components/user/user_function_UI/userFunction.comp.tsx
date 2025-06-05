@@ -8,10 +8,16 @@ import UserReportForm from "../user__reportForm/userReportForm.comp";
 // Import css
 import "./userFunction.comp.css"
 import { MapContainer, TileLayer } from "react-leaflet";
+import { useToast } from "../../../hooks/toastMessage/toast";
+import { useSpinner } from "../../../hooks/spinner/spinner";
 
 const UserFunctionUI: React.FC = () => {
     // State
     const [isReportForm, setIsReportForm] = useState<boolean>(false)
+
+    // Custom hook
+    const { addToast } = useToast()
+    const { openSpinner } = useSpinner()
 
     // Map
     const mapRef = useRef<any>(null);
@@ -19,6 +25,16 @@ const UserFunctionUI: React.FC = () => {
     // Handler
     const handleCloseReportForm = () => {
         setIsReportForm(!isReportForm)
+    }
+
+    const handleEmergency = () => {
+        // addToast({
+        //     typeToast: "s",
+        //     content: "pla pla",
+        //     duration: 5
+        // })
+
+        // openSpinner()
     }
 
     return (
@@ -68,7 +84,7 @@ const UserFunctionUI: React.FC = () => {
             </div>
 
             <div className="userFunctionUI__emergencyContainer">
-                <button className="userFunctionUI__emergencyContainer--btn">emergency</button>
+                <button className="userFunctionUI__emergencyContainer--btn" onClick={handleEmergency}>emergency</button>
             </div>
             
             {!isReportForm ? "" : (

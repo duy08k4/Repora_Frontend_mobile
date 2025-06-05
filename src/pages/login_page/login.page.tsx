@@ -47,10 +47,10 @@ const LoginPage: React.FC = () => {
                 </div>
 
                 <div className="loginForm__direction">
-                    <p>
+                    <span>
                         Cant't login? Let
                         <p className="redirect" onClick={() => { redirect.push("/register") }}>register here</p>
-                    </p>
+                    </span>
                 </div>
             </div>
         </IonPage>

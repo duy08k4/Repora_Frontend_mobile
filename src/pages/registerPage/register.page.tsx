@@ -6,6 +6,13 @@ import { useHistory } from "react-router"
 // Import component
 import Register_Verify from "../../components/user/register_verification/registerVerification.comp"
 
+// Import service
+import sendOTP from "../../services/user/user.sendOTP.serv"
+
+// Import custom hook
+import { useToast } from "../../hooks/toastMessage/toast"
+import { useSpinner } from "../../hooks/spinner/spinner"
+
 // import css
 import "./register.page.css"
 
@@ -26,6 +33,10 @@ const RegisterPage: React.FC = () => {
     const [errorName, setErrorName] = useState<string>("")
     const [errorPassword, setErrorPassword] = useState<string>("")
     const [errorConfirmPassword, setErrorConfirmPassword] = useState<string>("")
+
+    // Custom hook
+    const { addToast } = useToast()
+    const { openSpinner, closeSpinner } = useSpinner()
 
     // Redux
 
@@ -56,7 +67,7 @@ const RegisterPage: React.FC = () => {
             setCheckData(false)
         } else {
             if (inputName.length >= 20) {
-                returnError = "Username must be less than 10 characters"
+                returnError = "Username must be less than 20 characters"
                 setCheckData(false)
             }
         }
@@ -111,13 +122,50 @@ const RegisterPage: React.FC = () => {
         setErrorConfirmPassword(returnError)
     }, [inputConfirmPassword])
 
+
     // Handler
-    const handleOpenOTP = () => {
-        setIsOTP(true)
+    const handleOpenOTP = async () => {
+        if (checkData) {
+            openSpinner()
+            await sendOTP({ gmail: inputGmail, method: "send" }).then((res) => {
+                closeSpinner()
+                setIsOTP(true)
+
+                if (res.status == 200) {
+                    addToast({
+                        typeToast: "i",
+                        content: res.data.mess,
+                        duration: 5
+                    })
+                } else {
+                    addToast({
+                        typeToast: "w",
+                        content: res.data.mess,
+                        duration: 5
+                    })
+                }
+                closeSpinner()
+            }).catch((error) => {
+                console.log(error)
+            })
+        } else {
+            addToast({
+                typeToast: "w",
+                content: "Please fill the input",
+                duration: 5
+            })
+        }
     }
 
-    const handleCloseOTP = () => {
-        setIsOTP(false)
+    const handleCloseOTP = (state: boolean, clearForm: boolean) => {
+        setIsOTP(state)
+
+        if (clearForm) {
+            setInputName("")
+            setInputGmail("")
+            setInputPassword("")
+            setInputConfirmPassword("")
+        }
     }
 
     return (
@@ -180,14 +228,14 @@ const RegisterPage: React.FC = () => {
                 </div>
 
                 <div className="registerForm__direction">
-                    <p>
+                    <span>
                         Already have account? Let
                         <p className="redirect" onClick={() => { redirect.push("/") }}>login here</p>
-                    </p>
+                    </span>
                 </div>
 
                 {!isOTP ? "" : (
-                    <Register_Verify closeOTP={handleCloseOTP} />
+                    <Register_Verify data={{ gmail: inputGmail, username: inputName, password: inputPassword }} closeOTP={handleCloseOTP} />
                 )}
             </div>
         </IonPage>
