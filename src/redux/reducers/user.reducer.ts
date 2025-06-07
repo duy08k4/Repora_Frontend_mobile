@@ -3,34 +3,28 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // Import interface
 
 // Define initial values
-const initial_userInformation  = {
-    username: "",
+const initial_user  = {
     gmail: "",
-    uuid: "",
-    avartarCode: "",
-    friends: [],
-    requests: [],
-    setting: {},
-    listChatCode: [],
-    lastMessage: {},
-    fullFriendInformation: [],
-    profileStatus: ""
+    role: "",
 }
 
 // Export reducer
-export const userInformation = createSlice({
+export const user = createSlice({
     name: "userInformation",
-    initialState: initial_userInformation,
+    initialState: initial_user,
     reducers: {
         // Các action trong reducer sẽ được tự động tạo ra
-        cacheSetName: (state, action: PayloadAction<string>) => {
-            state.username = action.payload;
+        cacheSetUser: (state, action: PayloadAction<{inputGmail: string, inputRole: string}>) => {
+            const inputData = action.payload
+
+            state.gmail = inputData.inputGmail
+            state.role = inputData.inputRole
         },
     },
 })
 
 export const {
-    cacheSetName,
-} = userInformation.actions;
+    cacheSetUser,
+} = user.actions;
 
-export default userInformation.reducer
+export default user.reducer

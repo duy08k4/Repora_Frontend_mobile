@@ -52,7 +52,6 @@ const Register_Verify: React.FC<{ data: interface_register_register_serv, closeO
             if (!inputCode.includes("")) {
                 openSpinner()
                 await verifyOTP({ inputOtp: [...inputCode].join("") }).then(async (verify_res) => {
-                    closeSpinner()
                     if (verify_res.status == 200) {
                         await createAccount(data).then((createAccount_res) => {
                             if (createAccount_res.status == 200) {
@@ -61,6 +60,7 @@ const Register_Verify: React.FC<{ data: interface_register_register_serv, closeO
                                     content: createAccount_res.data.mess,
                                     duration: 5
                                 })
+                                closeSpinner()
                                 handleCloseOTP(true)
                             } else {
                                 addToast({
@@ -68,13 +68,15 @@ const Register_Verify: React.FC<{ data: interface_register_register_serv, closeO
                                     content: createAccount_res.data.mess,
                                     duration: 5
                                 })
+                                closeSpinner()
                                 handleCloseOTP(true)
                             }
                         }).catch((err) => { throw new Error(err) })
-
+                        
                     } else {
                         setInputCode(["", "", "", ""])
                         inputRef[0].current?.focus()
+                        closeSpinner()
                         addToast({
                             typeToast: "e",
                             content: verify_res.data.mess,

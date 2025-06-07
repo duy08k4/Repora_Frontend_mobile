@@ -2,6 +2,16 @@ import type { ReactNode } from "react";
 
 interface interface__authContext {
     cacheSetData: (param: any) => void,
+
+
+     // Listener
+    enableListener_userInformation_staff: (gmail: string) => void,
+    enableListener_userInformation_user: (gmail: string) => void,
+    
+
+    // Disable Listener
+    disableListener_userInformation_staff: () => void,
+    disableListener_userInformation_user: () => void,
 }
 
 interface interface__authProviderProps {

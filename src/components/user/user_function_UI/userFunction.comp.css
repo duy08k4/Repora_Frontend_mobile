@@ -33,7 +33,7 @@
 
     .userFunctionUI__allFunction__btn--logout {
         background-color: darkred;
-        
+
         i {
             color: white;
         }
@@ -69,5 +69,46 @@
         padding: 20px 0;
         border-radius: 20px;
         box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* Custom marker */
+/* Client */
+.client__customMarker {
+    .clientMarker {
+        position: relative;
+        height: 20px;
+        width: 20px;
+        background-color: #1E90FF;
+        border-radius: 50%;
+    }
+
+    .clientMarker::after {
+        position: absolute;
+        content: "";
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 26px;
+        width: 26px;
+        animation: clientMarkerEffect 0.5s ease-in-out alternate infinite;
+    }
+}
+
+@keyframes clientMarkerEffect {
+    from {
+        height: 25px;
+        width: 25px;
+        background-color: transparent;
+        border-radius: 50%;
+        border: 1px solid #1E90FF;
+    }
+
+    to {
+        height: 30px;
+        width: 30px;
+        background-color: transparent;
+        border-radius: 50%;
+        border: 1px solid #1E90FF;
     }
 }

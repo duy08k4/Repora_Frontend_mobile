@@ -20,9 +20,9 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 // Import libraries
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { Route } from 'react-router-dom';
+import { Route, useHistory, useLocation } from 'react-router-dom';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // Import component
 import StartPage from './pages/startPage/start.page';
@@ -30,44 +30,68 @@ import LoginPage from './pages/login_page/login.page';
 import RegisterPage from './pages/registerPage/register.page';
 import MapPage from './pages/mapPage/map.page';
 
-// import interface
+// Import custom hook
+import { useCache } from './hooks/cache/cache';
+
+// import service
+import user_autoLogin from './services/user/user.autoLogin.serv';
+import { cacheSetUser } from './redux/reducers/user.reducer';
+import staff_autoLogin from './services/staff/staff.autoLogin.serv';
 
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  // State -----------------------------------------------------------
+  const redirect = useHistory();
+  const { cacheSetData } = useCache();
 
-
-  // Custom hooks ----------------------------------------------------
-
-
-  // Redux -----------------------------------------------------------
-
-
-  // Effect ----------------------------------------------------------
-  
-  // Startus bar layout
   useEffect(() => {
-    // if (!serverState) return;
+    const autoLogin = async () => {
+      let loggedIn = false;
 
-    const init = async () => {
+      const results = await Promise.allSettled([
+        user_autoLogin(),
+        staff_autoLogin(),
+      ]);
+
+      results.forEach((result, index) => {
+        if (result.status === 'fulfilled' && result.value.status === 200) {
+          const res_data = result.value.data.data;
+
+          cacheSetData(
+            cacheSetUser({
+              inputGmail: res_data.gmail,
+              inputRole: res_data.role,
+            })
+          );
+
+          loggedIn = true;
+        }
+      });
+
+      if (loggedIn) {
+        redirect.push('/map');
+      } else {
+        redirect.push('/');
+      }
+    };
+
+    autoLogin();
+  }, [redirect, cacheSetData]);
+
+  useEffect(() => {
+    const initStatusBar = async () => {
       try {
         await StatusBar.setOverlaysWebView({ overlay: false });
-
         await StatusBar.setBackgroundColor({ color: '#000000' });
-
         await StatusBar.setStyle({ style: Style.Dark });
       } catch (err) {
         console.error('StatusBar config failed', err);
       }
     };
 
-    init();
+    initStatusBar();
   }, []);
-
-
-  // Handler ---------------------------------------------------------
 
   return (
     <IonApp>
@@ -77,7 +101,7 @@ const App: React.FC = () => {
         <Route exact path="/map" component={MapPage} />
       </IonRouterOutlet>
     </IonApp>
-  )
+  );
 };
 
 export default App;

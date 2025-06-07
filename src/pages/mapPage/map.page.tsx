@@ -11,6 +11,8 @@ import UserFunctionUI from "../../components/user/user_function_UI/userFunction.
 import "./map.page.css"
 
 import 'leaflet/dist/leaflet.css';
+import { useSelector } from "react-redux"
+import { RootState } from "../../redux/store"
 // import 'leaflet-defaulticon-compatibility';
 
 const MapPage: React.FC = () => {
@@ -18,11 +20,17 @@ const MapPage: React.FC = () => {
     // Map
     const mapRef = useRef<any>(null);
 
+    // Redux
+    const userRole = useSelector((state: RootState) => state.user.role)
+
     return (
         <IonPage>
             <div className="mapPage">
-                {/* <StaffFunctionUI /> */}
-                <UserFunctionUI />
+                {userRole == "user" ? (
+                    <UserFunctionUI />
+                ) : (
+                    <StaffFunctionUI />
+                )}
             </div>
         </IonPage>
     )

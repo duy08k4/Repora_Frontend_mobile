@@ -1,14 +1,19 @@
 // Import libraries
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 // Import component
 import MapResizeHandler from "../../map_resizeHandler/MapResizeHandler";
 import StaffListTask from "../staff__listTask/staffListTask.comp";
 import StaffReportView from "../staff__report__view/staffReportView.comp";
 
+// Import custom hook
+import { useCache } from "../../../hooks/cache/cache";
+
 // Import css
 import "./staffFunction.comp.css"
 import { MapContainer, TileLayer } from "react-leaflet";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const StaffFunctionUI: React.FC = () => {
     // State
@@ -18,6 +23,19 @@ const StaffFunctionUI: React.FC = () => {
 
     // Map
     const mapRef = useRef<any>(null);
+
+    // Redux
+    const staffGmail = useSelector((state: RootState) => state.user.gmail)
+
+    // Custom hooke
+    const { enableListener_userInformation_staff } = useCache()
+
+    // Effect
+    useEffect(() => {
+        if (staffGmail != "") {
+            enableListener_userInformation_staff(staffGmail)
+        }
+    },[staffGmail])
 
     // Handler
     const handleCloseTaskList = () => {

@@ -7,16 +7,34 @@ import { interface__user__reportForm__props } from "../../../types/interface__us
 // Import css
 import "./userReportForm.comp.css"
 
-const UserReportForm: React.FC<interface__user__reportForm__props> = ({ closeReportForm }) => {
+// Import custom hook
+import { useToast } from "../../../hooks/toastMessage/toast"
+
+// Import service
+import sendReport from "../../../services/user/user.sendReport.serv"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../redux/store"
+
+const UserReportForm: React.FC<interface__user__reportForm__props> = ({ closeReportForm, clientPosition }) => {
     // State
+    const [reportName, setReportName] = useState<string>("")
+    const [incidentType, setIncidentType] = useState<string>("")
     const [incidentLevel, setIncidentLevel] = useState<string>("")
-    const [isIncidenLevelForm, setIsIncidenLevelForm] = useState<boolean>(false)
     const [imageSelected, setImageSelected] = useState<File | null>(null)
+
+    const [isIncidenLevelForm, setIsIncidenLevelForm] = useState<boolean>(false)
 
     // Ref
     const reportForm = useRef<HTMLDivElement>(null)
     const incidentLevelForm = useRef<HTMLDivElement>(null)
     const inputFileType = useRef<HTMLInputElement | null>(null);
+
+    // Custom hook
+    const { addToast } = useToast()
+
+    // Redux
+    const userGmail = useSelector((state: RootState) => state.userInfo.gmail)
+    const username = useSelector((state: RootState) => state.userInfo.username)
 
     // Handler
     const handleChooseImg = () => {
@@ -30,9 +48,66 @@ const UserReportForm: React.FC<interface__user__reportForm__props> = ({ closeRep
         }
     }
 
-    const handleSendReport = () => {
-        alert("Sent your report")
-        closeReportForm()
+    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setIncidentType(event.target.value);
+    };
+
+    const handleCheckData = () => {
+        if (reportName && incidentType && imageSelected) {
+            setIsIncidenLevelForm(true)
+
+        } else {
+            addToast({
+                typeToast: "w",
+                content: "Please fill report form",
+                duration: 3
+            })
+        }
+    }
+
+    const handleSendReport = async () => {
+        if (incidentLevel && clientPosition[0] != 0 && clientPosition[1] != 0) {
+            alert("Sent your report")
+            await sendReport({
+                name: reportName,
+                type: incidentType,
+                level: incidentLevel,
+                file: imageSelected!,
+                reporter_name: username,
+                reporter_gmail: userGmail,
+                position: clientPosition
+            }).then((res) => {
+                if (res.status == 200) {
+                    addToast({
+                        typeToast: "s",
+                        content: res.data.mess,
+                        duration: 3
+                    })
+                } else {
+                    addToast({
+                        typeToast: "e",
+                        content: res.data.mess,
+                        duration: 3
+                    })
+                }
+
+                closeReportForm()
+            }).catch((err) => {
+                closeReportForm()
+                console.log(err)
+                addToast({
+                    typeToast: "e",
+                    content: "Can't send report",
+                    duration: 3
+                })
+            })
+        } else {
+            addToast({
+                typeToast: "w",
+                content: "Please choose level",
+                duration: 3
+            })
+        }
     }
 
     // Effect
@@ -81,10 +156,10 @@ const UserReportForm: React.FC<interface__user__reportForm__props> = ({ closeRep
 
                 <div className="userReportForm__form">
                     <div className="userReportForm__form__inputform">
-                        <input type="text" placeholder="Name" />
+                        <input type="text" placeholder="Name" value={reportName} onChange={(e) => { setReportName(e.target.value) }} />
 
-                        <select>
-                            <option value="empty">Incident's type</option>
+                        <select value={incidentType} onChange={handleSelectChange}>
+                            <option value="">Incident's type</option>
                             <option value="traffic">Traffic</option>
                             <option value="electricity">Electricity</option>
                             <option value="other">Other</option>
@@ -99,7 +174,7 @@ const UserReportForm: React.FC<interface__user__reportForm__props> = ({ closeRep
                     </div>
 
                     <div className="userReportForm__form__btnContainer">
-                        <button className="userReportForm__form__btn" onClick={() => { setIsIncidenLevelForm(true) }}>Continue</button>
+                        <button className="userReportForm__form__btn" onClick={handleCheckData}>Continue</button>
                     </div>
                 </div>
             </div>

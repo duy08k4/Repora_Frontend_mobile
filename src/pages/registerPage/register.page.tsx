@@ -144,9 +144,9 @@ const RegisterPage: React.FC = () => {
                         duration: 5
                     })
                 }
-                closeSpinner()
             }).catch((error) => {
                 console.log(error)
+                closeSpinner()
             })
         } else {
             addToast({
