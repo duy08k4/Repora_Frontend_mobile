@@ -11,13 +11,18 @@ import Repora_Login_Element from "../../assets/Repora_Login_Element.png"
 import { useToast } from "../../hooks/toastMessage/toast"
 import { useSpinner } from "../../hooks/spinner/spinner"
 import { useCache } from "../../hooks/cache/cache"
+import { cacheSetUser } from "../../redux/reducers/user.reducer"
 
 // Import service
 import loginAccount from "../../services/loginAccount.serv"
 
 // Import css
 import "./login.page.css"
-import { cacheSetUser } from "../../redux/reducers/user.reducer"
+
+// Import redux
+import { useSocket } from "../../hooks/socket/socket"
+import { useSelector } from "react-redux"
+import { RootState } from "../../redux/store"
 
 const LoginPage: React.FC = () => {
     // State
@@ -29,6 +34,8 @@ const LoginPage: React.FC = () => {
     const { addToast } = useToast()
     const { openSpinner, closeSpinner } = useSpinner()
     const { cacheSetData } = useCache()
+    const { staffOnline } = useSocket()
+
 
     // Handler
     const handleLogin = async () => {
@@ -55,13 +62,20 @@ const LoginPage: React.FC = () => {
             // Service
             openSpinner()
             await loginAccount({ gmail: inputGmail, password: sha256(inputPassword) }).then((res) => {
+                console.log(res)
                 if (res.status == 200) {
                     const res_data = res.data.data
-                    
+
                     cacheSetData(cacheSetUser({
                         inputGmail: res_data.gmail,
                         inputRole: res_data.role
                     }))
+
+                    console.log(res_data.role)
+
+                    if (res_data.role == "staff") {
+                        staffOnline({ staffGmail: res_data.gmail })
+                    }
 
                     addToast({
                         typeToast: "s",

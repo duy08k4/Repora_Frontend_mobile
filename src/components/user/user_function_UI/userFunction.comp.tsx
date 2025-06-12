@@ -21,6 +21,8 @@ import { useCache } from "../../../hooks/cache/cache";
 // Import redux
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { logoutAccount } from "../../../services/logoutAccount.serv";
+import { useHistory } from "react-router";
 
 // Client marker
 const clientMarker = `
@@ -34,10 +36,29 @@ const customIcon = L.divIcon({
     iconAnchor: [8, 0]
 });
 
+// Report marker
+const createReportMarker = () => {
+    const reportMarker = `
+            <div class="reportMarker">
+               <i class="fas fa-flag"></i>
+            </div>
+        `
+
+    return L.divIcon({
+        className: "report__customMarker",
+        html: reportMarker,
+        iconAnchor: [0, 27]
+    })
+}
+
+
 // 
 const UserFunctionUI: React.FC = () => {
     // State
     const [isReportForm, setIsReportForm] = useState<boolean>(false)
+    const [showReportLocation, setShowReportLocation] = useState<boolean>(false)
+    const redirect = useHistory()
+
 
     // Custom hook
     const { addToast } = useToast()
@@ -46,6 +67,7 @@ const UserFunctionUI: React.FC = () => {
 
     // Redux
     const userGmail = useSelector((state: RootState) => state.user.gmail)
+    const listReport = useSelector((state: RootState) => state.reportImformation.listReport)
 
     // Map
     // const position = useRef<[number, number]>([10.8231, 106.6297]);
@@ -57,6 +79,7 @@ const UserFunctionUI: React.FC = () => {
 
     const markerRef = useRef<LeafletMarker>(null)
     const mapRef = useRef<any>(null);
+    const getPositionLoop = useRef<ReturnType<typeof setInterval> | null>(null)
 
     // Effect
     useEffect(() => {
@@ -65,7 +88,6 @@ const UserFunctionUI: React.FC = () => {
         }
     }, [userGmail])
 
-    const getPositionLoop = useRef<ReturnType<typeof setInterval> | null>(null)
 
     useEffect(() => {
         getPositionLoop.current = setInterval(async () => {
@@ -133,25 +155,44 @@ const UserFunctionUI: React.FC = () => {
     }, [mapRef.current]);
 
     // Handler
-    const handleCloseReportForm = () => {
+    const handleCloseReportForm = () => { // Close report form
         setIsReportForm(!isReportForm)
     }
 
-    const findMyLocation = () => {
+    const findMyLocation = () => { // Find my location
         if (mapRef.current && position) {
             mapRef.current.setView(position, 21)
         }
     }
 
-    const handleEmergency = () => {
-        // addToast({
-        //     typeToast: "s",
-        //     content: "pla pla",
-        //     duration: 5
-        // })
-
-        // openSpinner()
+    const handleLogout = async () => { // Logout
+        await logoutAccount().then((res) => {
+            if (res.status == 200) {
+                redirect.push("/")
+            } else {
+                addToast({
+                    typeToast: "e",
+                    content: "Can't logout",
+                    duration: 3
+                })
+            }
+        }).catch((err) => {
+            console.log(err)
+            addToast({
+                typeToast: "e",
+                content: "Can't logout",
+                duration: 3
+            })
+        })
     }
+
+    const handleShowReportLocation = () => { // Show location of report
+        setShowReportLocation(!showReportLocation)
+    }
+
+    // const handleEmergency = () => {
+        
+    // }
 
     return (
         <div className="userFunctionUI">
@@ -176,20 +217,22 @@ const UserFunctionUI: React.FC = () => {
 
                 <Marker position={position} icon={customIcon} ref={markerRef} ></Marker>
 
+                {showReportLocation && listReport.map((report, index) => {
+                    return (
+                        <Marker key={index} position={report.position} icon={createReportMarker()} ref={markerRef} ></Marker>
+                    )
+                })}
+
                 <MapResizeHandler />
             </MapContainer>
 
             <div className="userFunctionUI__allFunction">
-                <button className="userFunctionUI__allFunction__btn userFunctionUI__allFunction__btn--logout">
+                <button className="userFunctionUI__allFunction__btn userFunctionUI__allFunction__btn--logout" onClick={handleLogout} >
                     <i className="fas fa-sign-out-alt"></i>
                 </button>
 
-                <button className="userFunctionUI__allFunction__btn userFunctionUI__allFunction__btn--incidentLocation">
+                <button className={`userFunctionUI__allFunction__btn userFunctionUI__allFunction__btn--incidentLocation ${showReportLocation}`} onClick={handleShowReportLocation}>
                     <i className="fas fa-flag"></i>
-                </button>
-
-                <button className="userFunctionUI__allFunction__btn userFunctionUI__allFunction__btn--staffLocation">
-                    <i className="fas fa-user-shield"></i>
                 </button>
 
                 <button className="userFunctionUI__allFunction__btn userFunctionUI__allFunction__btn--createReport" onClick={handleCloseReportForm}>
@@ -201,9 +244,9 @@ const UserFunctionUI: React.FC = () => {
                 </button>
             </div>
 
-            <div className="userFunctionUI__emergencyContainer">
+            {/* <div className="userFunctionUI__emergencyContainer">
                 <button className="userFunctionUI__emergencyContainer--btn" onClick={handleEmergency}>emergency</button>
-            </div>
+            </div> */}
 
             {!isReportForm ? "" : (
                 <UserReportForm closeReportForm={handleCloseReportForm} clientPosition={position} />

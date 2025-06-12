@@ -9,6 +9,7 @@ import "./userReportForm.comp.css"
 
 // Import custom hook
 import { useToast } from "../../../hooks/toastMessage/toast"
+import { useSpinner } from "../../../hooks/spinner/spinner"
 
 // Import service
 import sendReport from "../../../services/user/user.sendReport.serv"
@@ -31,6 +32,7 @@ const UserReportForm: React.FC<interface__user__reportForm__props> = ({ closeRep
 
     // Custom hook
     const { addToast } = useToast()
+    const { openSpinner, closeSpinner } = useSpinner()
 
     // Redux
     const userGmail = useSelector((state: RootState) => state.userInfo.gmail)
@@ -67,7 +69,8 @@ const UserReportForm: React.FC<interface__user__reportForm__props> = ({ closeRep
 
     const handleSendReport = async () => {
         if (incidentLevel && clientPosition[0] != 0 && clientPosition[1] != 0) {
-            alert("Sent your report")
+            openSpinner()
+
             await sendReport({
                 name: reportName,
                 type: incidentType,
@@ -77,6 +80,7 @@ const UserReportForm: React.FC<interface__user__reportForm__props> = ({ closeRep
                 reporter_gmail: userGmail,
                 position: clientPosition
             }).then((res) => {
+                closeSpinner()
                 if (res.status == 200) {
                     addToast({
                         typeToast: "s",
@@ -93,6 +97,7 @@ const UserReportForm: React.FC<interface__user__reportForm__props> = ({ closeRep
 
                 closeReportForm()
             }).catch((err) => {
+                closeSpinner()
                 closeReportForm()
                 console.log(err)
                 addToast({

@@ -1,0 +1,10 @@
+{
+  "resourcesDirectory": "assets",
+  "platforms": {
+    "android": {
+      "icon": {
+        "source": "logo.png"
+      }
+    }
+  }
+}

@@ -30,6 +30,49 @@
             font-size: 18px;
         }
     }
+
+    .staffFunctionUI__allFunction__btn--logout {
+        background-color: darkred;
+
+        i {
+            color: #ffffff;
+        }
+    }
+
+    .staffFunctionUI__allFunction__btn--incidentLocation.true {
+        background-color: #3e3f46;
+
+        i {
+            color: #ffffff;
+        }
+    }
+
+    .staffFunctionUI__allFunction__btn--anotherStaffLocation.true {
+        background-color: #3e3f46;
+
+        i {
+            color: #ffffff;
+        }
+    }
+
+    .staffFunctionUI__allFunction__btn--task {
+        border: 5px solid #ffffff;
+    }
+
+    .staffFunctionUI__allFunction__btn--task.true {
+        border: 5px solid red;
+        animation: newTaskAnimate linear 0.3s infinite alternate;
+    }
+}
+
+@keyframes newTaskAnimate {
+    from {
+        border: 5px solid #ffffff;
+    }
+
+    to {
+        border: 5px solid red;
+    }
 }
 
 .staffFunctionUI__reportAnnountContainer {
@@ -43,17 +86,13 @@
     background-color: transparent;
     display: flex;
     gap: 20px;
-    justify-content: space-between;
+    justify-content: center;
 
     .staffFunctionUI__reportAnnountContainer__btn {
         height: fit-content;
-        flex: 1;
+        width: 80%;
         padding: 20px 0;
         border-radius: 10px;
-    }
-
-    .staffFunctionUI__reportAnnountContainer__btn--requireSupport {
-        background-color: red;
     }
 
     .staffFunctionUI__reportAnnountContainer__btn--DoneTask {
@@ -71,17 +110,23 @@
     height: fit-content;
     width: calc(100% - 60px);
     background-color: transparent;
-
-    .staffFunctionUI__stateTask {
-        color: orange;
+    
+    .staffFunctionUI__taskStateContainer__tag__box--state i {
+        color: #ffffff;
+        font-size: 24px;
+        text-shadow: 0 0 5px black;
     }
 
-    .staffFunctionUI__stateTask.normal {
-        color: lime;
+    .staffFunctionUI__taskStateContainer__tag.normal {
+        background-color: lime;
+    }
+    
+    .staffFunctionUI__taskStateContainer__tag.severe {
+        background-color: orange;
     }
 
-    .staffFunctionUI__stateTask.critical {
-        color: red;
+    .staffFunctionUI__taskStateContainer__tag.critical {
+        
     }
 
     .staffFunctionUI__taskStateContainer__tag {
@@ -98,6 +143,45 @@
         .staffFunctionUI__taskStateContainer__tag__box--nameTask {
             height: fit-content;
             flex: 1;
+            font-size: 18px;
+
+            p {
+                text-shadow: 0 0 5px black;
+                color: #ffffff;
+            }
         }
+
+        .staffFunctionUI__taskStateContainer__tag__box--taskMarker {
+            height: 5px;
+            width: 5px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 20px;
+            border-radius: 50%;
+
+            i {
+                font-size: 18px;
+                color: red;
+            }
+        }
+    }
+
+
+}
+
+
+/* Custom marker */
+.staff__customMarker {
+    .staffMarkerMarker {
+        height: 50px;
+        width: 50px;
+        background-color: transparent;
+    }
+
+    .fa-map-marker-alt {
+        color: #3e3f46;
+        font-size: 40px;
     }
 }

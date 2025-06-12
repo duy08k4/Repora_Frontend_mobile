@@ -8,7 +8,7 @@
 .userFunctionUI__allFunction {
     position: absolute;
     z-index: 500;
-    bottom: 120px;
+    bottom: 60px;
     right: 30px;
     height: fit-content;
     width: fit-content;
@@ -42,6 +42,14 @@
     .userFunctionUI__allFunction__btn--createReport {
         i {
             color: red;
+        }
+    }
+
+    .userFunctionUI__allFunction__btn--incidentLocation.true {
+        background-color: #3e3f46;
+
+        i {
+            color: #ffffff;
         }
     }
 }
@@ -110,5 +118,19 @@
         background-color: transparent;
         border-radius: 50%;
         border: 1px solid #1E90FF;
+    }
+}
+
+/* Custom marker */
+.report__customMarker {
+    .reportMarker {
+        height: 50px;
+        width: 50px;
+        background-color: transparent;
+    }
+
+    .fa-flag {
+        color: red;
+        font-size: 40px;
     }
 }

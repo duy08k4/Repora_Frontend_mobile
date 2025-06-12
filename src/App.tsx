@@ -35,39 +35,62 @@ import { useCache } from './hooks/cache/cache';
 
 // import service
 import user_autoLogin from './services/user/user.autoLogin.serv';
-import { cacheSetUser } from './redux/reducers/user.reducer';
 import staff_autoLogin from './services/staff/staff.autoLogin.serv';
+import wakeUpServer from './services/wakeupServer.serv';
 
+
+// Custom hook
+import { cacheSetUser } from './redux/reducers/user.reducer';
+import { useSocket } from './hooks/socket/socket';
 
 setupIonicReact();
 
 const App: React.FC = () => {
+  // State
   const redirect = useHistory();
-  const { cacheSetData } = useCache();
+  const [serverState, setServerState] = useState<boolean>(false)
 
+  // Customhook
+  const { cacheSetData } = useCache();
+  const { staffOnline } = useSocket()
+
+  // Effect
   useEffect(() => {
     const autoLogin = async () => {
       let loggedIn = false;
 
-      const results = await Promise.allSettled([
+      const [userResult, staffResult] = await Promise.allSettled([
         user_autoLogin(),
         staff_autoLogin(),
       ]);
 
-      results.forEach((result, index) => {
-        if (result.status === 'fulfilled' && result.value.status === 200) {
-          const res_data = result.value.data.data;
+      if (userResult.status === 'fulfilled' && userResult.value.status === 200) {
+        const res_data = userResult.value.data.data;
 
-          cacheSetData(
-            cacheSetUser({
-              inputGmail: res_data.gmail,
-              inputRole: res_data.role,
-            })
-          );
+        cacheSetData(
+          cacheSetUser({
+            inputGmail: res_data.gmail,
+            inputRole: res_data.role,
+          })
+        );
 
-          loggedIn = true;
-        }
-      });
+        loggedIn = true;
+      }
+
+      if (staffResult.status === 'fulfilled' && staffResult.value.status === 200) {
+        const res_data = staffResult.value.data.data;
+
+        staffOnline({ staffGmail: res_data.gmail });
+
+        cacheSetData(
+          cacheSetUser({
+            inputGmail: res_data.gmail,
+            inputRole: res_data.role,
+          })
+        );
+
+        loggedIn = true;
+      }
 
       if (loggedIn) {
         redirect.push('/map');
@@ -78,6 +101,7 @@ const App: React.FC = () => {
 
     autoLogin();
   }, [redirect, cacheSetData]);
+
 
   useEffect(() => {
     const initStatusBar = async () => {
@@ -93,14 +117,36 @@ const App: React.FC = () => {
     initStatusBar();
   }, []);
 
+
+  useEffect(() => {
+    const wakeServer = async () => {
+      await wakeUpServer().then(() => {
+        setTimeout(() => {
+          setServerState(true)
+        }, 2000)
+      }).catch(async () => {
+        // await wakeServer()
+      })
+
+    }
+    (async () => {
+      await wakeServer()
+    })()
+  })
+
   return (
     <IonApp>
-      <IonRouterOutlet>
-        <Route exact path="/" component={LoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
-        <Route exact path="/map" component={MapPage} />
-      </IonRouterOutlet>
-    </IonApp>
+      {!serverState ? (
+        <StartPage />
+      ) : (
+        <IonRouterOutlet>
+          <Route exact path="/" component={LoginPage} />
+          <Route exact path="/register" component={RegisterPage} />
+          <Route exact path="/map" component={MapPage} />
+        </IonRouterOutlet>
+      )
+      }
+    </IonApp >
   );
 };
 
