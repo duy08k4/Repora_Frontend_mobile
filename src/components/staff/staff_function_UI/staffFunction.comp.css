@@ -126,7 +126,7 @@
     }
 
     .staffFunctionUI__taskStateContainer__tag.critical {
-        
+        background-color: red;
     }
 
     .staffFunctionUI__taskStateContainer__tag {

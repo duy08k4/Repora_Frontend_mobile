@@ -130,29 +130,17 @@ const UserFunctionUI: React.FC = () => {
         }
     }, [])
 
-    useEffect(() => {
-        if (!mapRef.current) return;
+    mapRef.current?.on("movestart", () => {
+        isUserInteractingRef.current = true;
 
-        const mapInstance = mapRef.current;
+        if (interactionTimeoutRef.current) {
+            clearTimeout(interactionTimeoutRef.current);
+        }
 
-        const handleMoveStart = () => {
-            isUserInteractingRef.current = true
-
-            if (interactionTimeoutRef.current) {
-                clearTimeout(interactionTimeoutRef.current);
-            }
-
-            interactionTimeoutRef.current = setTimeout(() => {
-                isUserInteractingRef.current = false
-            }, 15000);
-        };
-
-        mapInstance.on("movestart", handleMoveStart);
-
-        return () => {
-            mapInstance.off("movestart", handleMoveStart);
-        };
-    }, [mapRef.current]);
+        interactionTimeoutRef.current = setTimeout(() => {
+            isUserInteractingRef.current = false;
+        }, 15000);
+    });
 
     // Handler
     const handleCloseReportForm = () => { // Close report form
@@ -191,7 +179,7 @@ const UserFunctionUI: React.FC = () => {
     }
 
     // const handleEmergency = () => {
-        
+
     // }
 
     return (

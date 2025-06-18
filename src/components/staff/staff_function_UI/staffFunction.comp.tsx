@@ -201,36 +201,17 @@ const StaffFunctionUI: React.FC = () => {
 
     }, [position])
 
-    useEffect(() => {
-        if (!mapRef.current) return;
+    mapRef.current?.on("movestart", () => {
+        isUserInteractingRef.current = true;
 
-        const mapInstance = mapRef.current;
+        if (interactionTimeoutRef.current) {
+            clearTimeout(interactionTimeoutRef.current);
+        }
 
-        const handleMoveStart = () => {
-            isUserInteractingRef.current = true;
-
-            if (interactionTimeoutRef.current) {
-                clearTimeout(interactionTimeoutRef.current);
-            }
-
-            interactionTimeoutRef.current = setTimeout(() => {
-                isUserInteractingRef.current = false;
-                // Tự động quay lại vị trí người dùng
-                if (mapRef.current && latestPositionRef.current) {
-                    mapRef.current.setView(latestPositionRef.current, mapRef.current.getZoom());
-                }
-            }, 15000); // 15 giây
-        };
-
-        mapInstance.on("movestart", handleMoveStart);
-
-        return () => {
-            mapInstance.off("movestart", handleMoveStart);
-            if (interactionTimeoutRef.current) {
-                clearTimeout(interactionTimeoutRef.current);
-            }
-        };
-    }, [mapRef.current]);
+        interactionTimeoutRef.current = setTimeout(() => {
+            isUserInteractingRef.current = false;
+        }, 15000);
+    });
 
     // Handler
     const handleCloseTaskList = () => {
@@ -304,7 +285,7 @@ const StaffFunctionUI: React.FC = () => {
         })
     }
 
-    const findReportLcation = (e:React.MouseEvent) => {
+    const findReportLcation = (e: React.MouseEvent) => {
         e.stopPropagation()
 
         isUserInteractingRef.current = true;
@@ -352,9 +333,9 @@ const StaffFunctionUI: React.FC = () => {
                     }
                 })}
 
-                {!isGotTask ? "" : (
+                {isGotTask && newReportStructure[listTask[0]] ? (
                     <Marker position={newReportStructure[listTask[0]].position} icon={createReportMarker()} ref={markerRef} ></Marker>
-                )}
+                ) : ""}
 
                 <MapResizeHandler />
             </MapContainer>
@@ -386,7 +367,7 @@ const StaffFunctionUI: React.FC = () => {
                 </button>
             </div>
 
-            {!isGotTask ? "" : (
+            {isGotTask && newReportStructure[listTask[0]] ? (
                 <>
                     <div className="staffFunctionUI__reportAnnountContainer">
                         <button className="staffFunctionUI__reportAnnountContainer__btn staffFunctionUI__reportAnnountContainer__btn--DoneTask" onClick={handleResponeResultTask}>
@@ -412,7 +393,7 @@ const StaffFunctionUI: React.FC = () => {
                         </div>
                     </div>
                 </>
-            )}
+            ) : ""}
 
             {!isStaffTaskList ? "" : (
                 <StaffListTask closeListTask={handleCloseTaskList} />
